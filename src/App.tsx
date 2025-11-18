@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import HomePage from './components/HomePage';
 import Auth from './components/Auth';
 import VendorDashboard from './components/vendor/VendorDashboard';
 import ClientDashboard from './components/client/ClientDashboard';
 
 function AppContent() {
   const { user, profile, loading } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
 
   if (loading) {
     return (
@@ -18,7 +21,10 @@ function AppContent() {
   }
 
   if (!user || !profile) {
-    return <Auth />;
+    if (showAuth) {
+      return <Auth />;
+    }
+    return <HomePage onGetStarted={() => setShowAuth(true)} />;
   }
 
   if (profile.role === 'vendor') {

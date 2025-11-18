@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, ServiceCategory } from '../../lib/supabase';
 import { useAuth } from '../../contexts/AuthContext';
-import { Calendar, MapPin, Plus, X } from 'lucide-react';
+import { Calendar, MapPin, Plus, X, DollarSign } from 'lucide-react';
 
 interface CreateRequestProps {
   onSuccess: () => void;
@@ -13,6 +13,8 @@ export default function CreateRequest({ onSuccess }: CreateRequestProps) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [eventDate, setEventDate] = useState('');
   const [eventLocation, setEventLocation] = useState('');
+  const [budgetMin, setBudgetMin] = useState('');
+  const [budgetMax, setBudgetMax] = useState('');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -55,6 +57,8 @@ export default function CreateRequest({ onSuccess }: CreateRequestProps) {
           client_id: profile?.id,
           event_date: eventDate,
           event_location: eventLocation,
+          budget_min: budgetMin ? parseFloat(budgetMin) : null,
+          budget_max: budgetMax ? parseFloat(budgetMax) : null,
           notes,
           status: 'open',
         })
@@ -76,6 +80,8 @@ export default function CreateRequest({ onSuccess }: CreateRequestProps) {
 
       setEventDate('');
       setEventLocation('');
+      setBudgetMin('');
+      setBudgetMax('');
       setNotes('');
       setSelectedCategories([]);
       onSuccess();
@@ -185,6 +191,41 @@ export default function CreateRequest({ onSuccess }: CreateRequestProps) {
               />
             </div>
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Budget Range (Optional)
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={budgetMin}
+                onChange={(e) => setBudgetMin(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Minimum budget"
+              />
+            </div>
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={budgetMax}
+                onChange={(e) => setBudgetMax(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Maximum budget"
+              />
+            </div>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            Providing a budget range helps vendors submit more accurate bids
+          </p>
         </div>
 
         <div>

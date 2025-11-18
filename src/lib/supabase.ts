@@ -45,7 +45,10 @@ export interface ServiceRequest {
   event_date: string;
   event_location: string;
   notes?: string;
+  budget_min?: number;
+  budget_max?: number;
   status: 'open' | 'closed';
+  awarded_vendor_id?: string;
   created_at: string;
   updated_at: string;
   client?: Profile;
@@ -71,4 +74,42 @@ export interface VendorResponse {
   updated_at: string;
   vendor?: Profile;
   service?: Service;
+}
+
+export interface Bid {
+  id: string;
+  request_id: string;
+  vendor_id: string;
+  service_id: string;
+  bid_amount: number;
+  delivery_days?: number;
+  message: string;
+  status: 'pending' | 'awarded' | 'rejected' | 'withdrawn';
+  awarded_at?: string;
+  created_at: string;
+  updated_at: string;
+  vendor?: Profile;
+  service?: Service;
+}
+
+export interface Conversation {
+  id: string;
+  request_id: string;
+  client_id: string;
+  vendor_id: string;
+  last_message_at: string;
+  created_at: string;
+  client?: Profile;
+  vendor?: Profile;
+  request?: ServiceRequest;
+}
+
+export interface Message {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+  sender?: Profile;
 }

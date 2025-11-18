@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { supabase, Service, ServiceRequest, RequestItem, VendorResponse } from '../../lib/supabase';
+import { supabase, Service, ServiceRequest, RequestItem } from '../../lib/supabase';
 import BrowseServices from './BrowseServices';
 import CreateRequest from './CreateRequest';
 import MyRequests from './MyRequests';
@@ -12,7 +12,7 @@ export default function ClientDashboard() {
   const { profile, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>('browse');
   const [services, setServices] = useState<Service[]>([]);
-  const [myRequests, setMyRequests] = useState<(ServiceRequest & { items: RequestItem[]; responses?: VendorResponse[] })[]>([]);
+  const [myRequests, setMyRequests] = useState<(ServiceRequest & { items: RequestItem[] })[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -43,8 +43,7 @@ export default function ClientDashboard() {
         .from('service_requests')
         .select(`
           *,
-          items:request_items(*, category:service_categories(*)),
-          responses:vendor_responses(*, vendor:profiles(full_name, email, phone), service:services(title, price, price_unit))
+          items:request_items(*, category:service_categories(*))
         `)
         .eq('client_id', profile?.id)
         .order('created_at', { ascending: false });
